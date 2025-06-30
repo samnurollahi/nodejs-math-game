@@ -1,0 +1,20 @@
+{
+  "name": "math-game",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "samcoder",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mysql2": "^3.14.1",
+    "sequelize": "^6.37.7",
+    "socket.io": "^4.8.1"
+  }
+}

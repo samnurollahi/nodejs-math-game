@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1>games</h1>
+
+    <h2>create room</h2>
+    <input type="text" placeholder="name room" id="createRoomInput" />
+    <button id="btnCreated">create</button>
+
+    <br /><br /><br />
+
+    <h2>search room</h2>
+    <input type="text" placeholder="name room" id="joinRoomInput" />
+    <button id="btnJoin">join</button>
+
+    <br /><br /><br /><br /><br />
+    <div id="gameRoom">
+      <h2>game</h2>
+      <h2>shma to hick gamei nisti :\</h2>
+    </div>
+
+    <script src="./socket.io.min.js"></script>
+    <script>
+      const btnCreated = document.getElementById("btnCreated");
+      const btnJoin = document.getElementById("btnJoin");
+
+      const socket = io();
+
+      btnCreated.addEventListener("click", () => {
+        if (createRoomInput.value) {
+          socket.emit("create-room", createRoomInput.value);
+        }
+      });
+      btnJoin.addEventListener("click", () => {
+        if (joinRoomInput.value) {
+          socket.emit("request-join-game", joinRoomInput.value);
+        }
+      });
+
+      socket.on("created", ({ roomName, id }) => {
+        gameRoom.innerHTML = `
+       <h2>${roomName}</h2>
+        
+       <p>players: </p>
+       <ul>
+        <li>${id}</li>
+      </ul>
+
+      <button id="btnStart" onclick="startMatch(${roomName})">start</button>
+        `;
+      });
+      socket.on("joied", ({ roomName, users }) => {
+        let usersHTML = ""
+        users.forEach(user => {
+          usersHTML += `<li>${user}</li>`
+        });
+
+        gameRoom.innerHTML = `
+        <h2>${roomName}</h2>
+        
+        <p>players: </p>
+        <ul id="listUL">
+          ${usersHTML}
+        </ul>
+        `;
+      });
+      socket.on("player-join", id => {
+        console.log("join id");
+        listUL.innerHTML += `<li>${id}</li>`
+      })
+    
+    
+      function startMatch(roomName) {
+        socket.emit("start-room", roomName)
+      }
+    </script>
+  </body>
+</html>
