@@ -23,11 +23,14 @@
       <h2>game</h2>
       <h2>shma to hick gamei nisti :\</h2>
     </div>
+    <h4 id="star">emtiyaz shoma: 0</h4>
 
     <script src="./socket.io.min.js"></script>
     <script>
       const btnCreated = document.getElementById("btnCreated");
       const btnJoin = document.getElementById("btnJoin");
+
+      let roomNameA = ""
 
       const socket = io();
 
@@ -43,6 +46,7 @@
       });
 
       socket.on("created", ({ roomName, id }) => {
+        roomNameA = roomName
         gameRoom.innerHTML = `
        <h2>${roomName}</h2>
         
@@ -51,10 +55,11 @@
         <li>${id}</li>
       </ul>
 
-      <button id="btnStart" onclick="startMatch(${roomName})">start</button>
+      <button id="btnStart" onclick="startMatch('${roomName}')">start</button>
         `;
       });
       socket.on("joied", ({ roomName, users }) => {
+        roomNameA = roomName
         let usersHTML = ""
         users.forEach(user => {
           usersHTML += `<li>${user}</li>`
@@ -73,10 +78,29 @@
         console.log("join id");
         listUL.innerHTML += `<li>${id}</li>`
       })
-    
-    
+      socket.on("q", (q) => {
+        gameRoom.innerHTML = `
+          <h4>${q}=</h4><input type="text" id="inputResult" />
+          <button id="btnSend" onclick="send({r: inputResult.value, q: '${q}'})">send</button>
+        `
+      })
+      socket.on("sabr", () => {
+        gameRoom.innerHTML = `
+          <h4>sabor bash dada</h4>
+        `
+      })
+      socket.on("star", ({you}) => {
+        star.innerHTML = `
+          emtiyaz shoma: ${you}
+        `
+      })
+
       function startMatch(roomName) {
         socket.emit("start-room", roomName)
+      }
+      function send(rq) {
+        console.log("hiiii");
+        socket.emit("r", {rq, roomNameA})
       }
     </script>
   </body>
